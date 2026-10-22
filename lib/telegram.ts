@@ -39,3 +39,59 @@ export async function getChannelMemberCount() {
   if (!response.ok || !json.ok) throw new Error(json.description || 'Kanal a’zolari sonini olib bo‘lmadi.');
   return Number(json.result ?? 0);
 }
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/**
+ * Xabarlar va hodisalar logini @uzb_c0de ga yuborish
+ */
+export async function sendTelegramLog(message: string) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_LOG_CHAT_ID || '8430883731';
+  if (!token || !chatId) return;
+
+  try {
+    const text = message.length > 4000 ? message.slice(0, 3990) + '…' : message;
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true,
+      }),
+      cache: 'no-store',
+    });
+  } catch (err) {
+    console.error('sendTelegramLog failed:', err);
+  }
+}
+
+/**
+ * Tizimda yuzaga kelgan xatoliklarni @uzb_c0de ga yuborish
+ */
+export async function sendTelegramError(title: string, error: unknown, context?: Record<string, unknown>) {
+  const errorMsg = error instanceof Error ? error.message : String(error);
+  const stack = error instanceof Error && error.stack ? error.stack.slice(0, 400) : '';
+  const now = new Date().toLocaleString('uz-UZ', { timeZone: 'Asia/Tashkent' });
+
+  let text = `🚨 <b>TIZIMDA XATOLIK!</b>\n\n`;
+  text += `📌 <b>Bo‘lim / Manzil:</b> ${title}\n`;
+  text += `⏰ <b>Vaqt:</b> ${now}\n`;
+  text += `❌ <b>Xatolik:</b> <code>${escapeHtml(errorMsg)}</code>\n`;
+  if (context && Object.keys(context).length > 0) {
+    text += `📋 <b>Kontekst:</b> <pre>${escapeHtml(JSON.stringify(context, null, 2).slice(0, 350))}</pre>\n`;
+  }
+  if (stack) {
+    text += `\n🔍 <b>Stack:</b>\n<pre>${escapeHtml(stack)}</pre>`;
+  }
+
+  await sendTelegramLog(text);
+}

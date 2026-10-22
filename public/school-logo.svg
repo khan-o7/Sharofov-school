@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A" />
+      <stop offset="50%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+  </defs>
+  <!-- Shield Background -->
+  <path d="M50 5 L88 22 C88 58 50 92 50 92 C50 92 12 58 12 22 Z" fill="url(#blueGrad)" stroke="url(#goldGrad)" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- Graduation Cap -->
+  <path d="M50 28 L74 38 L50 48 L26 38 Z" fill="url(#goldGrad)" />
+  <path d="M35 44 L35 56 C35 63 65 63 65 56 L65 44" stroke="url(#goldGrad)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Tassel -->
+  <path d="M70 40 L76 50 L77 58" stroke="#FDE68A" stroke-width="2" stroke-linecap="round"/>
+  <!-- Monogram S -->
+  <path d="M50 63 C43 63 39 66 39 70 C39 76 61 74 61 81 C61 86 56 88 50 88 C43 88 38 85 37 80" stroke="url(#goldGrad)" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+</svg>

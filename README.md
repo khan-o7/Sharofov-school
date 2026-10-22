@@ -1,62 +1,79 @@
-# Sharofov School QR Referal (starter)
+# Sharofov School — QR Referal va Mukofot Tizimi 🎓
 
-Next.js + Vercel Functions + Supabase PostgreSQL + Telegram channel membership check.
+Ushbu loyiha **Sharofov School** o‘quv markazi uchun maxsus ishlab chiqilgan premium darajadagi QR kod aksiya va referal platformasi hamda to‘liq ma’muriy tahlil (Admin Dashboard) tizimidir.
 
-## What this starter includes
-- One shared QR entrypoint: `/` redirects to `/r/main`
-- Referral landing route supports `/r/[code]` for future referral campaigns
-- Scan-event logging to PostgreSQL
-- Telegram Login Widget assertion validation
-- Telegram channel membership verification through `getChatMember`
-- Admin login with an HTTP-only signed session cookie
-- Admin dashboard showing total/today scans, subscribed participants and latest scan events
-- SQL schema for referrals, scans, subscription checks, participants and reward claims
+---
 
-## Requirements
-- Node.js 20.9+ recommended
-- A Supabase project
-- A Telegram bot created with `@BotFather`
-- Bot added as an administrator in `@sharofovschool`
-- Telegram Login Widget configured for your site domain with BotFather `/setdomain`
+## 🌟 Loyiha Funksionalligi
 
-## Local setup
-1. Copy `.env.example` to `.env.local` and fill in all values.
-2. In Supabase SQL Editor, run `sql/schema.sql`.
-3. Create a Telegram bot with `@BotFather`; set the login domain to `localhost` for local testing if supported by your setup and to your production domain after deployment.
-4. Add the bot as administrator to `@sharofovschool`, with permission to view members. Keep the bot token private.
-5. Create a referral record in Supabase, for example:
+### 1. Foydalanuvchi Sahifasi (QR Skaner qilinganda)
+Foydalanuvchi QR kodni skaner qilishi bilanoq `/r/main` manziliga yo‘naltiriladi va quyidagi premium sahifa ochiladi:
+- **Maxsus Tabrik va Yutuq E’loni:**
+  - 3D oltin sovg‘a qutisi va diplom vizuali, bayramona konfetti animatsiyasi.
+  - Sarlavha: **"Tabriklaymiz! Yutuqqa ega bo‘ldingiz!"**
+  - Ajratilgan banner: **"50 000 so‘m pul mukofoti Sizniki bo‘lishi mumkin!"**
+- **1-Shart:**
+  - **Telegram kanalga obuna bo‘lish** (adminga taqdim etiladi): `https://t.me/sharofovschool`
+  - Bir bosishda Telegram dasturida ochiladigan tugma (statistika uchun bosishlar soni qayd etiladi).
+  - Obunani qayd etish: Foydalanuvchi o‘z username/telefonini kiritadi yoki Telegram widget orqali tasdiqlaydi.
+- **2-Shart:**
+  - **O‘z do‘stingizni taklif eting:**
+  - Maxsus eslatma: *"Do‘stingiz kurs tanlab oylik to‘lovni qilishi bilanoq Sizga har bir do‘stingiz uchun 50 000 so‘m pul mukofoti taqdim etiladi."*
+  - **Tezkor Ulashish:** Telegram orqali do‘stlarga tayyor matn bilan ulashish va havolani nusxalash tugmalari.
+  - **Do‘stni Ro‘yxatga Qo‘shish (Anketa):** Foydalanuvchi o‘z ma’lumotlari va do‘stining ismi, telefoni hamda qiziqqan kursini yuboradi. Ma’lumotlar darhol Admin panelga tushadi!
+- **Mukofot olish bosqichlari & Sharofov School kurslari.**
 
-   ```sql
-   insert into referrals(code, owner_name, owner_student_id)
-   values ('main', 'Sharofov School', 'SCHOOL-001');
-   ```
+---
 
-6. Install and run:
+### 2. Admin Dashboard (`/admin`)
+Xavfsiz login va maxfiy parol orqali kiriladi:
+- **Login:** `admin`
+- **Parol:** `20042802` *(yoki `.env.local` da belgilangan parol)*
 
+#### Asosiy imkoniyatlar:
+1. **Dinamik Vaqt Filtrlari:**
+   - 📅 **Kunlik (Bugun):** Bugungi 24 soatlik soatbay skanerlar va kanalga a’zolar grafigi.
+   - 📊 **Oxirgi 7 kun:** 7 kunlik dinamika grafigi.
+   - 🗓️ **Oylik (Shu oy / 30 kun):** Shu oyning har bir kunidagi skanerlar dinamikasi.
+   - 🏛️ **Yillik (Shu yil):** 12 oy (Yanvar–Dekabr) bo‘yicha to‘liq taqsimot.
+2. **Kuzatuv Kartochkalari (Metrics):**
+   - **QR Kod Skanerlari:** Jami, bugungi, oylik va yillik skanerlar soni.
+   - **Kanal A’zolari:** Telegram Bot API orqali `@sharofovschool` kanalining jonli a’zolar soni, sayt orqali o‘tganlar va konversiya foizi.
+   - **Taklif Qilingan Do‘stlar:** Jami ro‘yxatga olingan referallar soni.
+   - **To‘langan Mukofotlar:** To‘langan 50 000 so‘mlik mukofotlar soni va jami summasi.
+3. **Do‘stlar va Mukofotlarni Boshqarish:**
+   - Kim kimni taklif qilgan, telefon raqamlari va tanlagan kurslari jadvali.
+   - Bir bosishda **"To‘lovni tasdiqlash"** va **"50 000 so‘m mukofot berildi"** deb belgilash imkoniyati.
+4. **QR Kod Generator va Chop Etish (Print Flyer):**
+   - Sharofov School logotipi bilan yuqori sifatli QR kod.
+   - PNG formatida yuklab olish (banner va flayerlar uchun).
+   - Tayyor A4/A5 targ‘ibot varaqasini printerdan chiqarish (Print).
+5. **Real-Vaqt Hodisalar Jurnali:**
+   - Har bir skan, Telegram tugmasining bosilishi va referal yozuvlarining Toshkent vaqti bilan jonli oqimi.
+
+---
+
+## 🚀 Ishga Tushirish (Local Run)
+
+1. Bog‘liqliklarni o‘rnatish:
    ```bash
    npm install
+   ```
+2. Loyihani ishga tushirish:
+   ```bash
    npm run dev
    ```
+3. Brauzerda ochish:
+   - Aksiya sahifasi (QR manzil): [http://localhost:3000/](http://localhost:3000/)
+   - Admin Boshqaruv: [http://localhost:3000/admin](http://localhost:3000/admin)
 
-7. Open `http://localhost:3000/` (this is the one shared QR destination) and `http://localhost:3000/admin`.
+---
 
-## Deploy to Vercel
-1. Push this project to a private GitHub repository.
-2. Import the repository in Vercel.
-3. Add every variable from `.env.example` in Vercel Project Settings -> Environment Variables.
-4. Set `NEXT_PUBLIC_SITE_URL` to your real HTTPS Vercel domain.
-5. Configure the Telegram Login Widget domain with `@BotFather` using the deployed hostname.
-6. Run the SQL schema in Supabase before testing; it automatically creates the shared `main` referral code.
-7. Redeploy after environment variable changes.
-
-## Security notes
-- Do not commit `.env.local` or share bot/service-role secrets.
-- Use a unique admin password and a random `SESSION_SECRET` of at least 32 characters.
-- The Supabase service-role key must only be used in server-side code.
-- This starter's admin credential is a single environment-configured account; add per-admin accounts, rate limiting, audit logs and password hashing before production if multiple admins are needed.
-- Scan events count requests to `/r/[code]`, not physical camera scans that never open the link. Preview bots may open links; filter suspicious requests before using counts for prizes.
-- The reward schema is included, but payment verification and marking rewards as paid are not yet wired into admin UI. The admin dashboard currently shows scan totals, a 7-day scan table, subscribed participants, and Telegram channel member count when the Bot API is configured correctly.
-- For reliable day-based reports, use the `Asia/Tashkent` timezone when querying or grouping timestamps.
-
-## What the scan count means
-The system records a visit when the shared QR destination opens in a browser. It cannot detect a QR code that was scanned by a camera if the visitor never opens the link. Link preview bots may also create visits, so use the scan log as landing-page opens rather than a perfect count of physical camera scans.
+## 🔒 Xavfsizlik va Konfiguratsiya (`.env.local`)
+- `ADMIN_USERNAME`: Admin login
+- `ADMIN_PASSWORD`: Admin parol
+- `SESSION_SECRET`: JWT shifrlash kaliti
+- `TELEGRAM_BOT_TOKEN`: Telegram bot tokeni
+- `TELEGRAM_CHANNEL_ID`: `@sharofovschool`
+- `NEXT_PUBLIC_SUPABASE_URL`: Supabase loyiha manzili
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabase maxfiy kaliti
