@@ -180,7 +180,7 @@ export default function ReferralClient({ code, referralId }: ReferralClientProps
             }}
           >
             <span className="text-gold-gradient">
-              50 000 so‘m pul mukofoti Sizniki bo‘lishi mumkin!
+              <span style={{ whiteSpace: 'nowrap' }}>50&nbsp;000&nbsp;so‘m</span> pul mukofoti Sizniki bo‘lishi mumkin!
             </span>
           </div>
 
@@ -331,23 +331,40 @@ export default function ReferralClient({ code, referralId }: ReferralClientProps
           {/* CRITICAL NOTICE BOX AS SPECIFIED IN USER PROMPT */}
           <div
             style={{
-              padding: '16px 20px',
-              borderRadius: 14,
+              padding: '18px 22px',
+              borderRadius: 16,
               background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(217, 119, 6, 0.08) 100%)',
-              border: '1px solid rgba(245, 158, 11, 0.4)',
+              border: '1px solid rgba(245, 158, 11, 0.45)',
               marginBottom: 20,
-              boxShadow: '0 8px 24px -5px rgba(245, 158, 11, 0.12)',
+              boxShadow: '0 8px 24px -5px rgba(245, 158, 11, 0.15)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-              <span style={{ fontSize: 24, lineHeight: 1 }}>💡</span>
-              <div style={{ fontSize: 'clamp(14px, 3.8vw, 15px)', color: '#fef3c7', lineHeight: 1.55 }}>
-                <strong style={{ color: '#fbbf24', display: 'block', marginBottom: 4, fontSize: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+              <span style={{ fontSize: 24, lineHeight: 1, marginTop: 2 }}>💡</span>
+              <div
+                style={{
+                  fontSize: 'clamp(14px, 3.8vw, 15.5px)',
+                  color: '#fef3c7',
+                  lineHeight: 1.75,
+                  letterSpacing: '0.025em',
+                  wordSpacing: '0.04em',
+                }}
+              >
+                <strong style={{ color: '#fbbf24', display: 'block', marginBottom: 6, fontSize: 16, letterSpacing: '0.04em' }}>
                   Eslatma:
                 </strong>
                 Do‘stingiz kurs tanlab oylik to‘lovni qilishi bilanoq Sizga har bir do‘stingiz uchun{' '}
-                <strong style={{ color: '#ffffff', textDecoration: 'underline', textDecorationColor: '#f59e0b', textUnderlineOffset: '3px' }}>
-                  50 000 so‘m pul mukofoti
+                <strong
+                  style={{
+                    color: '#ffffff',
+                    whiteSpace: 'nowrap',
+                    textDecoration: 'underline',
+                    textDecorationColor: '#f59e0b',
+                    textUnderlineOffset: '4px',
+                    fontWeight: 800,
+                  }}
+                >
+                  50&nbsp;000&nbsp;so‘m pul mukofoti
                 </strong>{' '}
                 taqdim etiladi.
               </div>
@@ -428,7 +445,7 @@ export default function ReferralClient({ code, referralId }: ReferralClientProps
               textAlign: 'center',
             }}
           >
-            🔥 <strong>Cheklov yo‘q:</strong> 5 ta do‘st = 250 000 so‘m, 10 ta do‘st = 500 000 so‘m pul mukofoti!
+            🔥 <strong>Cheklov yo‘q:</strong> 5 ta do‘st = <span style={{ whiteSpace: 'nowrap' }}>250&nbsp;000&nbsp;so‘m</span>, 10 ta do‘st = <span style={{ whiteSpace: 'nowrap' }}>500&nbsp;000&nbsp;so‘m</span> pul mukofoti!
           </div>
         </section>
 
