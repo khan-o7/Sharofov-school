@@ -53,6 +53,30 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
   const [loginLoading, setLoginLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Lockout tracking state
+  const [lockoutRemaining, setLockoutRemaining] = useState<number>(0);
+
+  // Password Recovery (Forgot Password Modal)
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotStep, setForgotStep] = useState<'request' | 'verify'>('request');
+  const [forgotCode, setForgotCode] = useState('');
+  const [forgotUsername, setForgotUsername] = useState('');
+  const [forgotPassword, setForgotPassword] = useState('');
+  const [forgotConfirmPassword, setForgotConfirmPassword] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotError, setForgotError] = useState('');
+  const [forgotSuccess, setForgotSuccess] = useState('');
+
+  // Change Credentials (Settings Modal for authenticated admin)
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newUsername, setNewUsername] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const [settingsError, setSettingsError] = useState('');
+  const [settingsSuccess, setSettingsSuccess] = useState('');
+
   // Filter Period: daily (today), weekly (7 days), monthly (30 days), yearly (12 months)
   const [period, setPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('daily');
 
@@ -60,6 +84,35 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState<string>('');
+
+  // Check lockout status on mount for unauthenticated users
+  useEffect(() => {
+    if (authed) return;
+    fetch('/api/admin/login')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.locked && data?.retryAfter > 0) {
+          setLockoutRemaining(data.retryAfter);
+          setError(`Xavfsizlik: 5 marta xato kiritilgan. ${data.retryAfter} soniya kuting.`);
+        }
+      })
+      .catch(() => {});
+  }, [authed]);
+
+  // Lockout countdown timer
+  useEffect(() => {
+    if (lockoutRemaining <= 0) return;
+    const timer = setInterval(() => {
+      setLockoutRemaining((prev) => {
+        if (prev <= 1) {
+          setError('');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [lockoutRemaining]);
 
   // Fetch Dashboard Stats
   const loadStats = useCallback(async () => {
@@ -91,6 +144,7 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
   // Login handler
   async function login(e: React.FormEvent) {
     e.preventDefault();
+    if (lockoutRemaining > 0) return;
     setError('');
     setLoginLoading(true);
     try {
@@ -101,7 +155,12 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
       });
       const d = await r.json();
       if (!r.ok) {
-        setError(d.error || 'Kirish amalga oshmadi.');
+        if (r.status === 429 || d.locked) {
+          setLockoutRemaining(d.retryAfter || 60);
+          setError(d.error || '5 marta ketma-ket xato kiritildi. 1 daqiqa kuting.');
+        } else {
+          setError(d.error || 'Kirish amalga oshmadi.');
+        }
         return;
       }
       setAuthed(true);
@@ -120,6 +179,125 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
     setAuthed(false);
     setStats(null);
   }
+
+  // Forgot password: send OTP to Telegram
+  async function handleSendResetCode() {
+    setForgotLoading(true);
+    setForgotError('');
+    setForgotSuccess('');
+    try {
+      const r = await fetch('/api/admin/forgot-password', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'send_code' }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Kodni yuborib bo‘lmadi.');
+      setForgotSuccess('Tasdiqlash kodi Telegram orqali @uzb_c0de ga muvaffaqiyatli yuborildi!');
+      setForgotStep('verify');
+    } catch (err) {
+      setForgotError(err instanceof Error ? err.message : 'Xatolik yuz berdi');
+    } finally {
+      setForgotLoading(false);
+    }
+  }
+
+  // Forgot password: verify OTP & apply new credentials
+  async function handleResetPassword(e: React.FormEvent) {
+    e.preventDefault();
+    setForgotLoading(true);
+    setForgotError('');
+    setForgotSuccess('');
+
+    if (forgotPassword !== forgotConfirmPassword) {
+      setForgotError('Yangi parollar bir-biriga mos kelmadi.');
+      setForgotLoading(false);
+      return;
+    }
+
+    if (forgotPassword.length < 6) {
+      setForgotError('Parol kamida 6 ta belgidan iborat bo‘lishi lozim.');
+      setForgotLoading(false);
+      return;
+    }
+
+    try {
+      const r = await fetch('/api/admin/forgot-password', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          action: 'verify_and_reset',
+          code: forgotCode.trim(),
+          newUsername: forgotUsername.trim(),
+          newPassword: forgotPassword,
+        }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Parolni tiklashda xatolik.');
+      setForgotSuccess('✅ Login va parol muvaffaqiyatli yangilandi! Yangi login va parol @uzb_c0de ga yuborildi.');
+      setTimeout(() => {
+        setShowForgotModal(false);
+        setForgotStep('request');
+        setForgotCode('');
+        setForgotUsername('');
+        setForgotPassword('');
+        setForgotConfirmPassword('');
+        setForgotSuccess('');
+      }, 2500);
+    } catch (err) {
+      setForgotError(err instanceof Error ? err.message : 'Xatolik yuz berdi');
+    } finally {
+      setForgotLoading(false);
+    }
+  }
+
+  // Authenticated settings: change credentials
+  async function handleChangeCredentials(e: React.FormEvent) {
+    e.preventDefault();
+    setSettingsLoading(true);
+    setSettingsError('');
+    setSettingsSuccess('');
+
+    if (newPassword !== confirmPassword) {
+      setSettingsError('Yangi parollar bir-biriga mos kelmadi.');
+      setSettingsLoading(false);
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setSettingsError('Yangi parol kamida 6 ta belgidan iborat bo‘lishi kerak.');
+      setSettingsLoading(false);
+      return;
+    }
+
+    try {
+      const r = await fetch('/api/admin/change-credentials', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword,
+          newUsername: newUsername.trim(),
+          newPassword,
+        }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'O‘zgartirishda xatolik.');
+      setSettingsSuccess('✅ Login va parol muvaffaqiyatli almashtirildi hamda @uzb_c0de ga yuborildi!');
+      setCurrentPassword('');
+      setNewUsername('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => {
+        setShowSettingsModal(false);
+        setSettingsSuccess('');
+      }, 2500);
+    } catch (err) {
+      setSettingsError(err instanceof Error ? err.message : 'Xatolik yuz berdi');
+    } finally {
+      setSettingsLoading(false);
+    }
+  }
+
 
 
   // Active chart series according to selected period
@@ -199,6 +377,21 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
             </p>
           </div>
 
+          {lockoutRemaining > 0 && (
+            <div className="lockout-banner" style={{ textAlign: 'center', marginBottom: 18 }}>
+              <div style={{ fontSize: 26, marginBottom: 2 }}>⏳</div>
+              <div style={{ fontWeight: 800, color: '#fca5a5', fontSize: 14 }}>
+                5 marta xato kiritildi!
+              </div>
+              <div style={{ fontSize: 12, color: '#fecaca', marginTop: 2 }}>
+                Xavfsizlik cheklovi: 1 daqiqa kutishingiz lozim.
+              </div>
+              <div className="lockout-timer">
+                ⏱️ 00:{lockoutRemaining < 10 ? `0${lockoutRemaining}` : lockoutRemaining}
+              </div>
+            </div>
+          )}
+
           <form onSubmit={login} style={{ display: 'grid', gap: 16 }}>
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#cbd5e1', marginBottom: 6 }}>
@@ -210,6 +403,7 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Login kiriting..."
                 required
+                disabled={lockoutRemaining > 0 || loginLoading}
                 className="modern-input"
               />
             </div>
@@ -225,6 +419,7 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Parolingizni kiriting..."
                 required
+                disabled={lockoutRemaining > 0 || loginLoading}
                 className="modern-input"
               />
             </div>
@@ -246,18 +441,204 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
 
             <button
               type="submit"
-              disabled={loginLoading}
+              disabled={loginLoading || lockoutRemaining > 0}
               className="btn-primary-gold"
-              style={{ width: '100%', marginTop: 6 }}
+              style={{
+                width: '100%',
+                marginTop: 6,
+                opacity: lockoutRemaining > 0 ? 0.5 : 1,
+                cursor: lockoutRemaining > 0 ? 'not-allowed' : 'pointer',
+              }}
             >
-              {loginLoading ? 'Kirilmoqda...' : 'Tizimga Kirish ➔'}
+              {lockoutRemaining > 0
+                ? `Bloklangan (${lockoutRemaining}s)`
+                : loginLoading
+                ? 'Kirilmoqda...'
+                : 'Tizimga Kirish ➔'}
             </button>
+
+            <div style={{ textAlign: 'center', marginTop: 4 }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForgotModal(true);
+                  setForgotStep('request');
+                  setForgotError('');
+                  setForgotSuccess('');
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#38bdf8',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  padding: '4px 8px',
+                }}
+              >
+                🔑 Parolni unutdingizmi? (Tiklash)
+              </button>
+            </div>
           </form>
 
-          <p style={{ textAlign: 'center', fontSize: 12, color: '#64748b', marginTop: 24, marginBottom: 0 }}>
+          <p style={{ textAlign: 'center', fontSize: 12, color: '#64748b', marginTop: 20, marginBottom: 0 }}>
             🔒 Xavfsiz Shifrlangan Aloqa
           </p>
         </div>
+
+        {/* FORGOT PASSWORD MODAL */}
+        {showForgotModal && (
+          <div className="modal-overlay" onClick={() => setShowForgotModal(false)}>
+            <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3 className="modal-title">
+                  <span>🔑</span> Parolni Tiklash
+                </h3>
+                <button
+                  type="button"
+                  className="modal-close-btn"
+                  onClick={() => setShowForgotModal(false)}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {forgotStep === 'request' ? (
+                <div style={{ display: 'grid', gap: 16 }}>
+                  <p style={{ fontSize: 13, color: '#cbd5e1', lineHeight: 1.6, margin: 0 }}>
+                    Admin maʼlumotlarini tiklash uchun tasdiqlash kodi Telegram bot orqali dasturchiga (<b>@uzb_c0de</b>) yuboriladi.
+                  </p>
+
+                  <div style={{ padding: '10px 14px', borderRadius: 10, background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#93c5fd', fontSize: 12 }}>
+                    💡 Telegramga yuborilgan 6 xonali maxsus kod orqali yangi login va parol o‘rnatishingiz mumkin.
+                  </div>
+
+                  {forgotError && (
+                    <div style={{ padding: '10px 14px', borderRadius: 8, background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#fca5a5', fontSize: 13 }}>
+                      ⚠️ {forgotError}
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={handleSendResetCode}
+                    disabled={forgotLoading}
+                    className="btn-modern btn-modern-primary"
+                    style={{ width: '100%', padding: '12px 20px', fontSize: 14, fontWeight: 700 }}
+                  >
+                    {forgotLoading ? 'Kod yuborilmoqda...' : '📩 Telegramga Kod Yuborish'}
+                  </button>
+
+                  <div style={{ textAlign: 'center' }}>
+                    <button
+                      type="button"
+                      onClick={() => setForgotStep('verify')}
+                      style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: 12, cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                      Menda allaqachon kod bor
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleResetPassword} style={{ display: 'grid', gap: 14 }}>
+                  <p style={{ fontSize: 13, color: '#94a3b8', margin: 0 }}>
+                    Telegram orqali olingan 6 xonali tasdiqlash kodini va yangi maʼlumotlarni kiriting:
+                  </p>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#cbd5e1', marginBottom: 6 }}>
+                      Tasdiqlash Kodi (6 xonali)
+                    </label>
+                    <input
+                      type="text"
+                      value={forgotCode}
+                      onChange={(e) => setForgotCode(e.target.value)}
+                      placeholder="123456"
+                      required
+                      maxLength={8}
+                      className="modern-input"
+                      style={{ letterSpacing: '3px', fontWeight: 800, textAlign: 'center', fontSize: 16 }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#cbd5e1', marginBottom: 6 }}>
+                      Yangi Admin Login
+                    </label>
+                    <input
+                      type="text"
+                      value={forgotUsername}
+                      onChange={(e) => setForgotUsername(e.target.value)}
+                      placeholder="Masalan: admin"
+                      required
+                      className="modern-input"
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#cbd5e1', marginBottom: 6 }}>
+                      Yangi Maxfiy Parol
+                    </label>
+                    <input
+                      type="password"
+                      value={forgotPassword}
+                      onChange={(e) => setForgotPassword(e.target.value)}
+                      placeholder="Kamida 6 ta belgi..."
+                      required
+                      className="modern-input"
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#cbd5e1', marginBottom: 6 }}>
+                      Yangi Parolni Qayta Kiriting
+                    </label>
+                    <input
+                      type="password"
+                      value={forgotConfirmPassword}
+                      onChange={(e) => setForgotConfirmPassword(e.target.value)}
+                      placeholder="Parolni tasdiqlang..."
+                      required
+                      className="modern-input"
+                    />
+                  </div>
+
+                  {forgotError && (
+                    <div style={{ padding: '10px 14px', borderRadius: 8, background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#fca5a5', fontSize: 13 }}>
+                      ⚠️ {forgotError}
+                    </div>
+                  )}
+
+                  {forgotSuccess && (
+                    <div style={{ padding: '10px 14px', borderRadius: 8, background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34d399', fontSize: 13 }}>
+                      {forgotSuccess}
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={forgotLoading}
+                    className="btn-primary-gold"
+                    style={{ width: '100%', marginTop: 6 }}
+                  >
+                    {forgotLoading ? 'Yangilanmoqda...' : '💾 Yangilash va Saqlash'}
+                  </button>
+
+                  <div style={{ textAlign: 'center', marginTop: 4 }}>
+                    <button
+                      type="button"
+                      onClick={() => setForgotStep('request')}
+                      style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: 12, cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                      ⬅️ Qayta kod so‘rash
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
       </main>
     );
   }
@@ -321,6 +702,18 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
             >
               ✈️ Kanal: @sharofovschool
             </a>
+
+            <button
+              onClick={() => {
+                setShowSettingsModal(true);
+                setSettingsError('');
+                setSettingsSuccess('');
+              }}
+              className="btn-modern btn-modern-secondary"
+              title="Login va parolni almashtirish"
+            >
+              ⚙️ Login & Parol
+            </button>
 
             <button
               onClick={() => {
@@ -599,6 +992,120 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
             </section>
           </div>
       </div>
+
+      {/* SETTINGS MODAL (CHANGE LOGIN & PASSWORD) */}
+      {showSettingsModal && (
+        <div className="modal-overlay" onClick={() => setShowSettingsModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">
+                <span>⚙️</span> Login va Parolni O‘zgartirish
+              </h3>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setShowSettingsModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ padding: '10px 14px', borderRadius: 10, background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#93c5fd', fontSize: 12, marginBottom: 16 }}>
+              ℹ️ <b>Eslatma:</b> Yangi kiritilgan login va parol darhol tizimda ishlay boshlaydi hamda xavfsizlik uchun Telegram orqali dasturchiga (<b>@uzb_c0de</b>) yuboriladi.
+            </div>
+
+            <form onSubmit={handleChangeCredentials} style={{ display: 'grid', gap: 14 }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#cbd5e1', marginBottom: 6 }}>
+                  Hozirgi Maxfiy Parol
+                </label>
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Amaldagi parolingizni kiriting..."
+                  required
+                  className="modern-input"
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#cbd5e1', marginBottom: 6 }}>
+                  Yangi Admin Login
+                </label>
+                <input
+                  type="text"
+                  value={newUsername}
+                  onChange={(e) => setNewUsername(e.target.value)}
+                  placeholder="Yangi login kiriting..."
+                  required
+                  className="modern-input"
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#cbd5e1', marginBottom: 6 }}>
+                  Yangi Maxfiy Parol
+                </label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Kamida 6 ta belgi..."
+                  required
+                  className="modern-input"
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#cbd5e1', marginBottom: 6 }}>
+                  Yangi Parolni Qayta Kiriting
+                </label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Parolni tasdiqlang..."
+                  required
+                  className="modern-input"
+                />
+              </div>
+
+              {settingsError && (
+                <div style={{ padding: '10px 14px', borderRadius: 8, background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#fca5a5', fontSize: 13 }}>
+                  ⚠️ {settingsError}
+                </div>
+              )}
+
+              {settingsSuccess && (
+                <div style={{ padding: '10px 14px', borderRadius: 8, background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34d399', fontSize: 13 }}>
+                  {settingsSuccess}
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => setShowSettingsModal(false)}
+                  className="btn-modern btn-modern-secondary"
+                  style={{ flex: 1 }}
+                >
+                  Bekor qilish
+                </button>
+                <button
+                  type="submit"
+                  disabled={settingsLoading}
+                  className="btn-primary-gold"
+                  style={{ flex: 2 }}
+                >
+                  {settingsLoading ? 'Saqlanmoqda...' : '💾 Saqlash'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
