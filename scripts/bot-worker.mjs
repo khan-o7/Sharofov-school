@@ -100,7 +100,14 @@ async function poll() {
           await processUpdate(update);
         }
       } else {
-        await new Promise((r) => setTimeout(r, 2000));
+        if (data.error_code === 409 || (data.description && data.description.includes('webhook is active'))) {
+          console.log('\n⚠️ DIQQAT: Telegramda Webhook faol (Vercel orqali 24/7 ishlamoqda).');
+          console.log('Agar botni faqat kompyuteringizda (lokal) ishlatmoqchi bo‘lsangiz, avval webhookni o‘chiring:');
+          console.log('  node scripts/set-webhook.mjs --delete\n');
+          await new Promise((r) => setTimeout(r, 10000));
+        } else {
+          await new Promise((r) => setTimeout(r, 2000));
+        }
       }
     } catch (err) {
       console.error('Polling xatosi:', err.message);

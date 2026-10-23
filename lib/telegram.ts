@@ -1,8 +1,12 @@
 import crypto from 'node:crypto';
 
+const DEFAULT_BOT_TOKEN = '8881510277:AAHuYVBdQzI3Mf_24-hpG6W2oP7y5UcIsyo';
+const DEFAULT_CHANNEL_ID = '@sharofovschool';
+const DEFAULT_LOG_CHAT_ID = '8430883731';
+
 export type TelegramUser = { id: number; first_name?: string; last_name?: string; username?: string; photo_url?: string; auth_date: number; hash: string };
 export function verifyTelegramLogin(data: TelegramUser) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const token = process.env.TELEGRAM_BOT_TOKEN || DEFAULT_BOT_TOKEN;
   if (!token) throw new Error('TELEGRAM_BOT_TOKEN sozlanmagan.');
   const entries = Object.entries(data).filter(([key, value]) => key !== 'hash' && value !== undefined && value !== null).map(([key, value]) => `${key}=${value}`).sort();
   const checkString = entries.join('\n');
@@ -14,8 +18,8 @@ export function verifyTelegramLogin(data: TelegramUser) {
   return Math.abs(Math.floor(Date.now() / 1000) - Number(data.auth_date)) <= 300;
 }
 export async function getMembership(userId: number) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const channel = process.env.TELEGRAM_CHANNEL_ID;
+  const token = process.env.TELEGRAM_BOT_TOKEN || DEFAULT_BOT_TOKEN;
+  const channel = process.env.TELEGRAM_CHANNEL_ID || DEFAULT_CHANNEL_ID;
   if (!token || !channel) throw new Error('Telegram bot yoki kanal ID sozlanmagan.');
   const response = await fetch(`https://api.telegram.org/bot${token}/getChatMember`, {
     method: 'POST', headers: { 'content-type': 'application/json' },
@@ -28,8 +32,8 @@ export async function getMembership(userId: number) {
 }
 
 export async function getChannelMemberCount() {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const channel = process.env.TELEGRAM_CHANNEL_ID;
+  const token = process.env.TELEGRAM_BOT_TOKEN || DEFAULT_BOT_TOKEN;
+  const channel = process.env.TELEGRAM_CHANNEL_ID || DEFAULT_CHANNEL_ID;
   if (!token || !channel) throw new Error('Telegram bot yoki kanal ID sozlanmagan.');
   const response = await fetch(`https://api.telegram.org/bot${token}/getChatMemberCount`, {
     method: 'POST', headers: { 'content-type': 'application/json' },
@@ -52,8 +56,8 @@ function escapeHtml(str: string): string {
  * Xabarlar va hodisalar logini @uzb_c0de ga yuborish
  */
 export async function sendTelegramLog(message: string) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_LOG_CHAT_ID || '8430883731';
+  const token = process.env.TELEGRAM_BOT_TOKEN || DEFAULT_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_LOG_CHAT_ID || DEFAULT_LOG_CHAT_ID;
   if (!token || !chatId) return;
 
   try {

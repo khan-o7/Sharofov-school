@@ -77,3 +77,32 @@ Xavfsiz login va maxfiy parol orqali kiriladi:
 - `TELEGRAM_CHANNEL_ID`: `@sharofovschool`
 - `NEXT_PUBLIC_SUPABASE_URL`: Supabase loyiha manzili
 - `SUPABASE_SERVICE_ROLE_KEY`: Supabase maxfiy kaliti
+
+---
+
+## 🤖 Telegram Botni Vercel'da 24/7 Ishlatish (Webhook)
+
+### Nega Vercel'da bot to'xtab qoladi?
+Vercel — **Serverless** platforma. Unda `npm run bot` kabi doimiy ishlovchi fon dasturlari (background worker/polling) ishlamaydi. 
+
+### Qanday qilib 24/7 uzluksiz ishlatiladi?
+Bot 24/7 ishlashi uchun Telegramning rasmiy **Webhook** mexanizmidan foydalaniladi. Webhook ulanganda, har gal Telegramda botga start bosilganda yoki xabar yozilganda, Telegram avtomatik ravishda Vercel'ga xabarni yetkazadi va Vercel soniya ichida javob qaytaradi. **Hech qanday VPS yoki kompyuterni yoqib qo'yish shart emas!**
+
+### Webhookni ulash (3 xil oson usul):
+
+#### 1-usul: Brauzer orqali (Eng osoni)
+1. Loyihangizni Vercel'ga yuklagach, brauzeringizda quyidagi manzilni oching:
+   `https://sizning-domen.vercel.app/api/telegram-webhook`
+2. Ochilgan sahifadagi **"🚀 Webhookni Bir Bosishda O‘rnatish"** tugmasini bosing!
+3. Tamom! Botingiz 24/7 ishga tushdi.
+
+#### 2-usul: Terminal orqali (Skript)
+Terminalda quyidagi buyruqni bering:
+```bash
+npm run set-webhook https://sizning-domen.vercel.app
+```
+
+#### 3-usul: Admin Panel orqali
+Admin panelga kiring (`/admin`) va yuqoridagi **"🤖 Bot 24/7 Webhook"** tugmasini bosing.
+
+*(Agar botni yana lokal kompyuterda `npm run bot` orqali sinamoqchi bo'lsangiz, `npm run set-webhook --delete` orqali webhookni o'chirishingiz mumkin).*

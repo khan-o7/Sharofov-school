@@ -703,6 +703,16 @@ export default function AdminDashboard({ loggedIn }: { loggedIn: boolean }) {
               ✈️ Kanal: @sharofovschool
             </a>
 
+            <a
+              href="/api/telegram-webhook"
+              target="_blank"
+              rel="noreferrer"
+              className="btn-modern btn-modern-secondary"
+              title="Telegram Bot Webhook holatini ko'rish va 24/7 ulash"
+            >
+              🤖 Bot 24/7 Webhook
+            </a>
+
             <button
               onClick={() => {
                 setShowSettingsModal(true);
