@@ -1,108 +1,135 @@
-# Sharofov School — QR Referal va Mukofot Tizimi 🎓
+# Sharofov School — Rasmiy Ta’lim Platformasi & Mukofot Tizimi 🎓
 
-Ushbu loyiha **Sharofov School** o‘quv markazi uchun maxsus ishlab chiqilgan premium darajadagi QR kod aksiya va referal platformasi hamda to‘liq ma’muriy tahlil (Admin Dashboard) tizimidir.
+Ushbu loyiha **Sharofov School** zamonaviy o‘quv markazi uchun maxsus ishlab chiqilgan premium darajadagi rasmiy veb-sayt, avtomatik ochiluvchi 50 000 so‘m aksiya/referal modal oynasi hamda to‘liq ma’muriy boshqaruv (Admin Dashboard) tizimidir.
+
+Dizayn konsepsiyasi: **Premium Glassmorphism + Modern Education Platform + Minimalist UI**.
 
 ---
 
-## 🌟 Loyiha Funksionalligi
+## 🌟 Loyiha Arxitekturasi va Imkoniyatlari
 
-### 1. Foydalanuvchi Sahifasi (QR Skaner qilinganda)
-Foydalanuvchi QR kodni skaner qilishi bilanoq `/r/main` manziliga yo‘naltiriladi va quyidagi premium sahifa ochiladi:
-- **Maxsus Tabrik va Yutuq E’loni:**
-  - 3D oltin sovg‘a qutisi va diplom vizuali, bayramona konfetti animatsiyasi.
-  - Sarlavha: **"Tabriklaymiz! Yutuqqa ega bo‘ldingiz!"**
-  - Ajratilgan banner: **"50 000 so‘m pul mukofoti Sizniki bo‘lishi mumkin!"**
-- **1-Shart:**
-  - **Telegram kanalga obuna bo‘lish** (adminga taqdim etiladi): `https://t.me/sharofovschool`
-  - Bir bosishda Telegram dasturida ochiladigan tugma (statistika uchun bosishlar soni qayd etiladi).
-  - Obunani qayd etish: Foydalanuvchi o‘z username/telefonini kiritadi yoki Telegram widget orqali tasdiqlaydi.
+### 1. Asosiy Sharofov School Sayti
+Dizayn chizmasiga (`Sharofov school 7.11.2026.html`) maksimal darajada aynan ishlab chiqilgan zamonaviy platforma:
+
+- **Topbar (Header):**
+  - Sharofov School qanot logotipi (`.wing`) va brend nomi.
+  - Silliq navigatsiya: *Bosh sahifa, Biz haqimizda, Statistika, Afzalliklar, Kitoblar, Sertifikat, Fikrlar, Aloqa*.
+  - Yuqori paneldagi **"🎁 Aksiya (50 000 so‘m)"** maxsus ochuvchi tugmasi.
+  - Mobil qurilmalar uchun moslashuvchan ochiluvchi menyu.
+- **Hero & Banner Visuals:**
+  - `hero-students.jpg` va `banner-students.jpg` orqali ta’lim muhitining vizual taqdimoti.
+- **Biz haqimizda (`#about`):**
+  - "Bilimga ishonch bilan qadam" va `SHAROFOV SCHOOL — BILIM • RIVOJLANISH • KELAJAK` gradient emblemasi.
+- **Statistika (`#stats`):**
+  - 1000+ Bitiruvchilar, 95% O‘zlashtirgan o‘quvchilar, 97+ Imtihondan jamlagan ball.
+- **Afzalliklarimiz (`#advantages`):**
+  - Co-working zonasi, Qo‘shimcha o‘qituvchi, Oylik imtihonlar kartalari.
+- **O‘quv materiallari (`#books`):**
+  - Sharofov School maxsus o‘quv qo‘llanmalari (English, Русский язык, Arab tili, Pochemuchka).
+- **Yutuqlar e’tirofi (`#certificate`):**
+  - Kursni muvaffaqiyatli tamomlagan o‘quvchilar sertifikati namoyishi.
+- **Fikrlar bo‘limi (`#reviews`):**
+  - Interaktiv baholash va fikr yuborish formasi (1–5 yulduzli baholash, ism, rol, matn).
+  - Yangi yuborilgan fikr jonli ravishda ro‘yxatga qo‘shiladi va adminga Telegram orqali xabar boradi.
+- **Aloqa (`#contact`):**
+  - Telefon: `+998 33 999-43-43`, Telegram: `@sharofov_school`, Instagram: `@sharofov_school`.
+  - Manzil: *Toshkent shahri, Uchtepa tumani, Farhod bozori ro‘parasida, OAZIS binosi, 2-qavat*.
+  - Google Xaritalar manzili va ish vaqtlari.
+- **Floating Controls:**
+  - Yuqoriga silliq qaytish (`To-Top`) tugmasi.
+  - Pastki chap burchakda miltillovchi yashil indikatorli `ModalLauncher` tugmasi.
+
+---
+
+### 2. Avtomatik Ochiladigan Modal Oyna (Aksiya & Referal)
+Foydalanuvchi asosiy saytga tashrif buyurishi bilan orqa fon qoraytirilgan va xiralashtirilgan (`backdrop-filter: blur(14px)`) holda ochiladi:
+
+- **Bayramona Konfetti:** Ochilganda avtomatik ravishda oltin-binafsha konfetti animatsiyasi.
+- **Sovg‘a qutisi vizuali:** 3D oltin sovg‘a qutisi va *"50 000 so‘m pul mukofoti Sizniki bo‘lishi mumkin!"* kafolat e’loni.
+- **1-Shart:** Telegram rasmiy kanaliga (`@sharofovschool`) obuna bo‘lish va tugma bosilishini avtomatik tahlil qilish (`/api/track`).
 - **2-Shart:**
-  - **O‘z do‘stingizni taklif eting:**
-  - Maxsus eslatma: *"Do‘stingiz kurs tanlab oylik to‘lovni qilishi bilanoq Sizga har bir do‘stingiz uchun 50 000 so‘m pul mukofoti taqdim etiladi."*
-  - **Tezkor Ulashish:** Telegram orqali do‘stlarga tayyor matn bilan ulashish va havolani nusxalash tugmalari.
-  - **Do‘stni Ro‘yxatga Qo‘shish (Anketa):** Foydalanuvchi o‘z ma’lumotlari va do‘stining ismi, telefoni hamda qiziqqan kursini yuboradi. Ma’lumotlar darhol Admin panelga tushadi!
-- **Mukofot olish bosqichlari & Sharofov School kurslari.**
+  - Eslatma: *"Do‘stingiz kurs tanlab oylik to‘lovni qilishi bilanoq Sizga har bir do‘stingiz uchun 50 000 so‘m pul mukofoti taqdim etiladi."*
+  - Telegram orqali do‘stlarga tayyor matn bilan ulashish va havolani nusxalash.
+  - **Do‘stni ro‘yxatga qo‘shish formasi:** Foydalanuvchi o‘z ismi va telefoni, do‘stining ismi, telefoni va qiziqqan kursini kiritib yuboradi.
+  - Ma’lumotlar zudlik bilan bazaga yoziladi, adminga Telegram bot orqali bildirishnoma yuboriladi va Admin Dashboardda ko‘rinadi.
+- **Qayta ochish:** Foydalanuvchi modalni yopgach (X, ESC yoki fon orqali), asosiy saytdagi maxsus suzuvchi tugma orqali istalgan vaqtda qayta ochishi mumkin.
 
 ---
 
-### 2. Admin Dashboard (`/admin`)
-Xavfsiz login va maxfiy parol orqali kiriladi:
+### 3. Admin Dashboard (`/admin`)
+Xavfsiz login va maxfiy parol orqali boshqariladi:
 - **Login:** `admin`
-- **Parol:** `20042802` *(yoki `.env.local` da belgilangan parol)*
+- **Parol:** `20042802` *(yoki `.env.local` dagi `ADMIN_PASSWORD`)*
 
 #### Asosiy imkoniyatlar:
-1. **Dinamik Vaqt Filtrlari:**
-   - 📅 **Kunlik (Bugun):** Bugungi 24 soatlik soatbay skanerlar va kanalga a’zolar grafigi.
-   - 📊 **Oxirgi 7 kun:** 7 kunlik dinamika grafigi.
-   - 🗓️ **Oylik (Shu oy / 30 kun):** Shu oyning har bir kunidagi skanerlar dinamikasi.
-   - 🏛️ **Yillik (Shu yil):** 12 oy (Yanvar–Dekabr) bo‘yicha to‘liq taqsimot.
-2. **Kuzatuv Kartochkalari (Metrics):**
-   - **QR Kod Skanerlari:** Jami, bugungi, oylik va yillik skanerlar soni.
-   - **Kanal A’zolari:** Telegram Bot API orqali `@sharofovschool` kanalining jonli a’zolar soni, sayt orqali o‘tganlar va konversiya foizi.
-   - **Taklif Qilingan Do‘stlar:** Jami ro‘yxatga olingan referallar soni.
-   - **To‘langan Mukofotlar:** To‘langan 50 000 so‘mlik mukofotlar soni va jami summasi.
+1. **Dinamik Vaqt Filtrlari:** Kunlik (bugun), Oxirgi 7 kun, Oylik (30 kun), Yillik (12 oy).
+2. **Kuzatuv Kartochkalari:** QR kod skanerlari, kanal a’zolari (jonli konversiya foizi bilan), taklif qilingan do‘stlar, to‘langan mukofotlar.
 3. **Do‘stlar va Mukofotlarni Boshqarish:**
    - Kim kimni taklif qilgan, telefon raqamlari va tanlagan kurslari jadvali.
-   - Bir bosishda **"To‘lovni tasdiqlash"** va **"50 000 so‘m mukofot berildi"** deb belgilash imkoniyati.
+   - Bir bosishda **"To‘lovni tasdiqlash"** va **"50 000 so‘m mukofot berildi"** deb belgilash (CRUD).
 4. **QR Kod Generator va Chop Etish (Print Flyer):**
    - Sharofov School logotipi bilan yuqori sifatli QR kod.
-   - PNG formatida yuklab olish (banner va flayerlar uchun).
-   - Tayyor A4/A5 targ‘ibot varaqasini printerdan chiqarish (Print).
+   - Flayer va bannerlar uchun PNG yuklab olish va to‘g‘ridan-to‘g‘ri printerga chiqarish.
 5. **Real-Vaqt Hodisalar Jurnali:**
-   - Har bir skan, Telegram tugmasining bosilishi va referal yozuvlarining Toshkent vaqti bilan jonli oqimi.
+   - Har bir skan, Telegram tugmasining bosilishi va referallarning jonli oqimi.
 
 ---
 
-## 🚀 Ishga Tushirish (Local Run)
+## 🤖 Telegram Bot Webhook Integratsiyasi (24/7 Vercel)
+
+Loyiha serverless muhitda 24/7 ishlashi uchun rasmiy Telegram Webhook mexanizmidan foydalanadi:
+
+- **Webhook URL:** `https://sizning-domen.vercel.app/api/telegram-webhook`
+- Yangi start bosilganda bot avtomatik javob beradi va administrator bilan bog‘lanish tugmalarini taqdim etadi.
+- Yangi referal va fikrlar qoldirilganda, tizim avtomatik ravishda admin log chatiga bildirishnoma yetkazadi.
+
+---
+
+## 🚀 Ishga Tushirish
 
 1. Bog‘liqliklarni o‘rnatish:
    ```bash
    npm install
    ```
-2. Loyihani ishga tushirish:
+
+2. Ishlab chiqish rejimida ishga tushirish:
    ```bash
    npm run dev
    ```
-3. Brauzerda ochish:
-   - Aksiya sahifasi (QR manzil): [http://localhost:3000/](http://localhost:3000/)
-   - Admin Boshqaruv: [http://localhost:3000/admin](http://localhost:3000/admin)
+
+3. Production uchun build qilish va ishga tushirish:
+   ```bash
+   npm run build
+   npm run start
+   ```
+
+4. Brauzerda ochish:
+   - Asosiy Sayt & Modal: [http://localhost:3000/](http://localhost:3000/)
+   - Admin Panel: [http://localhost:3000/admin](http://localhost:3000/admin)
+   - Webhook Holati: [http://localhost:3000/api/telegram-webhook](http://localhost:3000/api/telegram-webhook)
 
 ---
 
-## 🔒 Xavfsizlik va Konfiguratsiya (`.env.local`)
-- `ADMIN_USERNAME`: Admin login
-- `ADMIN_PASSWORD`: Admin parol
-- `SESSION_SECRET`: JWT shifrlash kaliti
-- `TELEGRAM_BOT_TOKEN`: Telegram bot tokeni
-- `TELEGRAM_CHANNEL_ID`: `@sharofovschool`
-- `NEXT_PUBLIC_SUPABASE_URL`: Supabase loyiha manzili
-- `SUPABASE_SERVICE_ROLE_KEY`: Supabase maxfiy kaliti
+## 🔒 Konfiguratsiya (`.env.local`)
 
----
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-## 🤖 Telegram Botni Vercel'da 24/7 Ishlatish (Webhook)
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+TELEGRAM_BOT_USERNAME=sharofov_school_bot
+NEXT_PUBLIC_TELEGRAM_BOT_USERNAME=sharofov_school_bot
+TELEGRAM_CHANNEL_ID=@sharofovschool
+NEXT_PUBLIC_TELEGRAM_CHANNEL_URL=https://t.me/sharofovschool
+TELEGRAM_LOG_CHAT_ID=your_telegram_chat_id
 
-### Nega Vercel'da bot to'xtab qoladi?
-Vercel — **Serverless** platforma. Unda `npm run bot` kabi doimiy ishlovchi fon dasturlari (background worker/polling) ishlamaydi. 
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_secure_password
+SESSION_SECRET=your_32_char_secret_key
 
-### Qanday qilib 24/7 uzluksiz ishlatiladi?
-Bot 24/7 ishlashi uchun Telegramning rasmiy **Webhook** mexanizmidan foydalaniladi. Webhook ulanganda, har gal Telegramda botga start bosilganda yoki xabar yozilganda, Telegram avtomatik ravishda Vercel'ga xabarni yetkazadi va Vercel soniya ichida javob qaytaradi. **Hech qanday VPS yoki kompyuterni yoqib qo'yish shart emas!**
-
-### Webhookni ulash (3 xil oson usul):
-
-#### 1-usul: Brauzer orqali (Eng osoni)
-1. Loyihangizni Vercel'ga yuklagach, brauzeringizda quyidagi manzilni oching:
-   `https://sizning-domen.vercel.app/api/telegram-webhook`
-2. Ochilgan sahifadagi **"🚀 Webhookni Bir Bosishda O‘rnatish"** tugmasini bosing!
-3. Tamom! Botingiz 24/7 ishga tushdi.
-
-#### 2-usul: Terminal orqali (Skript)
-Terminalda quyidagi buyruqni bering:
-```bash
-npm run set-webhook https://sizning-domen.vercel.app
+NEXT_PUBLIC_SITE_URL=https://sharofov-school.vercel.app
 ```
 
-#### 3-usul: Admin Panel orqali
-Admin panelga kiring (`/admin`) va yuqoridagi **"🤖 Bot 24/7 Webhook"** tugmasini bosing.
+---
 
-*(Agar botni yana lokal kompyuterda `npm run bot` orqali sinamoqchi bo'lsangiz, `npm run set-webhook --delete` orqali webhookni o'chirishingiz mumkin).*
+© SHAROFOV SCHOOL. Barcha huquqlar himoyalangan.
