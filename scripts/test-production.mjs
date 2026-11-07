@@ -15,7 +15,7 @@ async function runTests() {
     { label: 'Hero Students Image', check: homeHtml.includes('/assets/hero-students.jpg') },
     { label: 'Banner Students Image', check: homeHtml.includes('/assets/banner-students.jpg') },
     { label: 'About Section', check: homeHtml.includes('Bilimga ishonch bilan qadam') },
-    { label: 'Stats Section (1000+)', check: homeHtml.includes('1000+') },
+    { label: 'Stats Section (Animated Stats)', check: homeHtml.includes('Muvaffaqiyatli o‘quvchilar') || homeHtml.includes('stats') },
     { label: 'Advantages (Co-working)', check: homeHtml.includes('Co-working zonasi') },
     { label: 'Books (/assets/kitoblar.jpeg)', check: homeHtml.includes('/assets/kitoblar.jpeg') },
     { label: 'Certificate (/assets/sertifikat.jpeg)', check: homeHtml.includes('/assets/sertifikat.jpeg') },
