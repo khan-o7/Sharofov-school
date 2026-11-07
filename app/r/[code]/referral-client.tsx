@@ -138,17 +138,23 @@ export default function ReferralClient({ code, referralId }: ReferralClientProps
           />
 
           {/* 3D Prize Box Artwork */}
-          <div style={{ marginBottom: 16, animation: 'floatSoft 4s ease-in-out infinite' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16, animation: 'floatSoft 4s ease-in-out infinite' }}>
             <img
               src="/reward-banner.jpg"
               alt="50 000 so'm Mukofot"
-              width={160}
-              height={160}
+              width={140}
+              height={140}
+              className="prize-box-img"
               style={{
+                width: '140px',
+                height: '140px',
+                maxWidth: '140px',
+                maxHeight: '140px',
                 borderRadius: 24,
                 boxShadow: '0 12px 35px -5px rgba(245, 158, 11, 0.4), 0 0 0 2px rgba(245, 158, 11, 0.3)',
-                display: 'inline-block',
+                display: 'block',
                 objectFit: 'cover',
+                margin: '0 auto',
               }}
             />
           </div>

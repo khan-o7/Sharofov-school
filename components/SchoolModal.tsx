@@ -17,17 +17,8 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
   const [subscribed, setSubscribed] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Friend referral lead form state
-  const [referrerName, setReferrerName] = useState('');
-  const [referrerPhone, setReferrerPhone] = useState('');
-  const [friendName, setFriendName] = useState('');
-  const [friendPhone, setFriendPhone] = useState('');
-  const [courseName, setCourseName] = useState('Ingliz tili');
-  const [leadLoading, setLeadLoading] = useState(false);
-  const [leadSuccess, setLeadSuccess] = useState(false);
-  const [leadError, setLeadError] = useState('');
-
   const modalRef = useRef<HTMLDivElement>(null);
+  const modalBodyRef = useRef<HTMLDivElement>(null);
 
   // Keyboard ESC listener
   useEffect(() => {
@@ -40,10 +31,13 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Lock body scroll when modal is open
+  // Lock body scroll and always scroll modal body to top when opened
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      if (modalBodyRef.current) {
+        modalBodyRef.current.scrollTop = 0;
+      }
     } else {
       document.body.style.overflow = '';
     }
@@ -124,50 +118,6 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
     }
   };
 
-  // Submit friend referral lead to Supabase & Admin Dashboard
-  const handleFriendLeadSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLeadError('');
-    if (!referrerName.trim() || !referrerPhone.trim() || !friendName.trim() || !friendPhone.trim()) {
-      setLeadError('Iltimos, barcha maydonlarni to‘ldiring');
-      return;
-    }
-
-    setLeadLoading(true);
-    try {
-      const res = await fetch('/api/track', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code: referralCode,
-          eventType: 'friend_lead',
-          metadata: {
-            referrer_name: referrerName.trim(),
-            referrer_phone: referrerPhone.trim(),
-            friend_name: friendName.trim(),
-            friend_phone: friendPhone.trim(),
-            course_name: courseName,
-            payment_status: 'pending',
-            reward_status: 'pending',
-            reward_amount: 50000,
-          },
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error('Ma’lumotlarni yuborishda xatolik yuz berdi');
-      }
-
-      setLeadSuccess(true);
-      setFriendName('');
-      setFriendPhone('');
-    } catch (err: any) {
-      setLeadError(err.message || 'Xatolik yuz berdi. Qaytadan urinib ko‘ring.');
-    } finally {
-      setLeadLoading(false);
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -219,10 +169,19 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
           </div>
         </div>
 
-        {/* Modal Scrollable Body */}
-        <div className="modal-body">
+        {/* Modal Scrollable Body (Always resets to top) */}
+        <div className="modal-body" ref={modalBodyRef}>
           {/* HERO CELEBRATION CARD */}
-          <section className="glass-panel glass-panel-gold" style={{ padding: '24px 20px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <section
+            className="glass-panel glass-panel-gold"
+            style={{
+              padding: '24px 20px',
+              textAlign: 'center',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Subtle gold glow circle */}
             <div
               style={{
                 position: 'absolute',
@@ -236,19 +195,22 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
               }}
             />
 
-            {/* 3D Prize Box Artwork */}
-            <div style={{ marginBottom: 14, animation: 'floatSoft 4s ease-in-out infinite' }}>
+            {/* 3D Prize Box Artwork - STRICT SIZING TO PREVENT STRETCHING */}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 14,
+                animation: 'floatSoft 4s ease-in-out infinite',
+              }}
+            >
               <img
                 src="/reward-banner.jpg"
                 alt="50 000 so‘m Mukofot"
-                width={140}
-                height={140}
-                style={{
-                  borderRadius: 22,
-                  boxShadow: '0 12px 35px -5px rgba(245, 158, 11, 0.45), 0 0 0 2px rgba(245, 158, 11, 0.35)',
-                  display: 'inline-block',
-                  objectFit: 'cover',
-                }}
+                width={130}
+                height={130}
+                className="prize-box-img"
               />
             </div>
 
@@ -285,7 +247,15 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
               </span>
             </div>
 
-            <p style={{ color: '#cbd5e1', fontSize: 'clamp(13px, 3.6vw, 15px)', maxWidth: 500, margin: '0 auto', lineHeight: 1.6 }}>
+            <p
+              style={{
+                color: '#cbd5e1',
+                fontSize: 'clamp(13px, 3.6vw, 15px)',
+                maxWidth: 500,
+                margin: '0 auto',
+                lineHeight: 1.6,
+              }}
+            >
               Mukofotni kafolatlangan holda qo‘lga kiritish uchun quyidagi oddiy shartlarni bajaring:
             </p>
           </section>
@@ -371,7 +341,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
             </div>
           </section>
 
-          {/* SHART 2: O'Z DO'STINGIZNI TAKLIF ETING */}
+          {/* SHART 2: O'Z DO'STINGIZNI TAKLIF ETING (CLEAN SHARING - WITHOUT EXTRA FORM AS REQUESTED) */}
           <section className="glass-panel" style={{ padding: '22px 20px' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 14 }}>
               <div
@@ -447,7 +417,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
             </div>
 
             {/* QUICK SHARING BUTTONS */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
               <a
                 href={`https://t.me/share/url?url=${encodeURIComponent(shareLink)}&text=${encodeURIComponent(
                   'Salom! SHAROFOV SCHOOL o‘quv markazining maxsus aksiyasiga taklif qilaman. Bu yerda sifatli ta’lim va 50 000 so‘m pul mukofotlari bor:'
@@ -455,157 +425,19 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                 target="_blank"
                 rel="noreferrer"
                 className="btn-telegram"
-                style={{ fontSize: 13, padding: '12px 14px' }}
+                style={{ fontSize: 14, padding: '14px 18px', width: '100%' }}
               >
-                ✈️ Do‘stlarga ulashish
+                ✈️ Do‘stlarga ulashish (Telegram)
               </a>
 
               <button
                 type="button"
                 className="btn-secondary"
                 onClick={handleCopyLink}
-                style={{ fontSize: 13, padding: '12px 14px' }}
+                style={{ fontSize: 14, padding: '14px 18px', width: '100%' }}
               >
-                {copied ? '✓ Nusxalandi!' : '🔗 Havolani nusxalash'}
+                {copied ? '✓ Havola nusxalandi!' : '🔗 Havolani nusxalash'}
               </button>
-            </div>
-
-            {/* DO'STNI RO'YXATGA QO'SHISH ANKETASI (FRIEND LEAD FORM) */}
-            <div
-              style={{
-                background: 'rgba(6, 11, 23, 0.55)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: 16,
-                padding: '18px 16px',
-              }}
-            >
-              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fbbf24', marginBottom: 4 }}>
-                📝 Do‘stingizni hoziroq ro‘yxatga qo‘shing
-              </h3>
-              <p style={{ fontSize: 12.5, color: '#94a3b8', marginBottom: 14 }}>
-                Ma’lumotlarni kiriting, do‘stingiz kursni boshlashi bilan mukofotingiz tayyor bo‘ladi:
-              </p>
-
-              {leadSuccess ? (
-                <div
-                  style={{
-                    padding: '14px',
-                    borderRadius: 12,
-                    background: 'rgba(16, 185, 129, 0.15)',
-                    border: '1px solid rgba(16, 185, 129, 0.35)',
-                    color: '#34d399',
-                    fontSize: 13.5,
-                    lineHeight: 1.6,
-                    textAlign: 'center',
-                  }}
-                >
-                  <div style={{ fontSize: 26, marginBottom: 4 }}>🎉</div>
-                  <strong>Muvaffaqiyatli saqlandi!</strong>
-                  <div>
-                    Do‘stingiz kurs tanlab birinchi to‘lovni qilishi bilanoq Sizga{' '}
-                    <strong style={{ color: '#fff' }}>50 000 so‘m</strong> mukofot to‘lab beriladi.
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setLeadSuccess(false)}
-                    className="btn-secondary"
-                    style={{ marginTop: 12, fontSize: 12, padding: '6px 14px' }}
-                  >
-                    + Yana bir do‘stni qo‘shish
-                  </button>
-                </div>
-              ) : (
-                <form className="modal-form" onSubmit={handleFriendLeadSubmit}>
-                  {leadError && (
-                    <div
-                      style={{
-                        padding: '10px 12px',
-                        borderRadius: 10,
-                        background: 'rgba(239, 68, 68, 0.15)',
-                        border: '1px solid rgba(239, 68, 68, 0.3)',
-                        color: '#f87171',
-                        fontSize: 12.5,
-                      }}
-                    >
-                      {leadError}
-                    </div>
-                  )}
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    <div className="modal-input-group">
-                      <label>Sizning ismingiz</label>
-                      <input
-                        type="text"
-                        className="modal-input"
-                        placeholder="Masalan: Sardor"
-                        required
-                        value={referrerName}
-                        onChange={(e) => setReferrerName(e.target.value)}
-                      />
-                    </div>
-                    <div className="modal-input-group">
-                      <label>Sizning telefoningiz</label>
-                      <input
-                        type="tel"
-                        className="modal-input"
-                        placeholder="+998 90 123 45 67"
-                        required
-                        value={referrerPhone}
-                        onChange={(e) => setReferrerPhone(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    <div className="modal-input-group">
-                      <label>Do‘stingizning ismi</label>
-                      <input
-                        type="text"
-                        className="modal-input"
-                        placeholder="Masalan: Jasur"
-                        required
-                        value={friendName}
-                        onChange={(e) => setFriendName(e.target.value)}
-                      />
-                    </div>
-                    <div className="modal-input-group">
-                      <label>Do‘stingizning telefoni</label>
-                      <input
-                        type="tel"
-                        className="modal-input"
-                        placeholder="+998 91 987 65 43"
-                        required
-                        value={friendPhone}
-                        onChange={(e) => setFriendPhone(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="modal-input-group">
-                    <label>Do‘stingiz qiziqqan kurs</label>
-                    <select
-                      className="modal-select"
-                      value={courseName}
-                      onChange={(e) => setCourseName(e.target.value)}
-                    >
-                      <option value="Ingliz tili">Ingliz tili</option>
-                      <option value="Rus tili">Rus tili</option>
-                      <option value="Arab tili">Arab tili</option>
-                      <option value="Maktabga tayyorlov (Pochemuchka)">Maktabga tayyorlov (Pochemuchka)</option>
-                      <option value="Matematika">Matematika</option>
-                    </select>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="btn-gold"
-                    disabled={leadLoading}
-                    style={{ width: '100%', marginTop: 4 }}
-                  >
-                    {leadLoading ? 'Yuborilmoqda...' : 'Do‘stni ro‘yxatga qo‘shish (50 000 so‘m)'}
-                  </button>
-                </form>
-              )}
             </div>
           </section>
 
@@ -710,4 +542,3 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
     </div>
   );
 }
-

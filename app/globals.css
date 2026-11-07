@@ -1147,6 +1147,18 @@ section {
   gap: 20px;
 }
 
+.prize-box-img {
+  width: 130px !important;
+  height: 130px !important;
+  max-width: 130px !important;
+  max-height: 130px !important;
+  border-radius: 22px !important;
+  box-shadow: 0 12px 35px -5px rgba(245, 158, 11, 0.45), 0 0 0 2px rgba(245, 158, 11, 0.35) !important;
+  display: block !important;
+  object-fit: cover !important;
+  margin: 0 auto !important;
+}
+
 /* Glass Panels inside Modal */
 .glass-panel {
   background: rgba(13, 20, 38, 0.75);
