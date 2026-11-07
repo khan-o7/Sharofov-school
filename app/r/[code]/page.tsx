@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { db } from '@/lib/db';
-import ReferralClient from './referral-client';
+import MainWebsite from '@/components/MainWebsite';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,8 +31,8 @@ export default async function ReferralPage({ params }: { params: Promise<{ code:
       user_agent: userAgent.slice(0, 300),
     });
   } catch (e) {
-    console.error('Scan logging failed:', e);
+    console.warn('Scan logging note:', e);
   }
 
-  return <ReferralClient code={code} referralId={referralId} />;
+  return <MainWebsite referralCode={code} initialModalOpen={true} />;
 }
