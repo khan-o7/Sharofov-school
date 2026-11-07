@@ -11,14 +11,21 @@ type SchoolModalProps = {
 
 export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: SchoolModalProps) {
   const channelUrl = process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL_URL || 'https://t.me/sharofovschool';
-  const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://sharofov-school.vercel.app';
-  const shareLink = `${siteUrl}/r/${referralCode}`;
+  const defaultSiteUrl = 'https://sharofov-school.vercel.app';
+  const [shareLink, setShareLink] = useState(`${defaultSiteUrl}/r/${referralCode}`);
 
   const [subscribed, setSubscribed] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const modalRef = useRef<HTMLDivElement>(null);
   const modalBodyRef = useRef<HTMLDivElement>(null);
+
+  // Sync shareLink on client to avoid SSR hydration mismatch
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setShareLink(`${window.location.origin}/r/${referralCode}`);
+    }
+  }, [referralCode]);
 
   // Keyboard ESC listener
   useEffect(() => {
@@ -195,22 +202,41 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
               }}
             />
 
-            {/* 3D Prize Box Artwork - STRICT SIZING TO PREVENT STRETCHING */}
+            {/* 3D Prize Box Artwork - STRICT SIZING TO PREVENT STRETCHING OR COLLAPSING */}
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginBottom: 14,
+                marginBottom: 16,
+                minHeight: 140,
+                width: '100%',
                 animation: 'floatSoft 4s ease-in-out infinite',
               }}
             >
               <img
                 src="/reward-banner.jpg"
                 alt="50 000 so‘m Mukofot"
-                width={130}
-                height={130}
+                width={140}
+                height={140}
+                loading="eager"
+                decoding="async"
                 className="prize-box-img"
+                style={{
+                  width: 140,
+                  height: 140,
+                  minWidth: 140,
+                  minHeight: 140,
+                  maxWidth: 140,
+                  maxHeight: 140,
+                  flexShrink: 0,
+                  borderRadius: 24,
+                  boxShadow: '0 14px 40px -5px rgba(245, 158, 11, 0.45), 0 0 0 2px rgba(245, 158, 11, 0.35)',
+                  display: 'block',
+                  objectFit: 'cover',
+                  margin: '0 auto',
+                  aspectRatio: '1 / 1',
+                }}
               />
             </div>
 
