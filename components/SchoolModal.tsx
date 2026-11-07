@@ -182,10 +182,16 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
           <section
             className="glass-panel glass-panel-gold"
             style={{
-              padding: '24px 20px',
+              padding: '28px 20px 24px 20px',
               textAlign: 'center',
               position: 'relative',
               overflow: 'hidden',
+              minHeight: 'fit-content',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '100%',
+              boxSizing: 'border-box',
             }}
           >
             {/* Subtle gold glow circle */}
@@ -210,6 +216,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                 alignItems: 'center',
                 marginBottom: 16,
                 minHeight: 140,
+                height: 140,
                 width: '100%',
                 animation: 'floatSoft 4s ease-in-out infinite',
               }}

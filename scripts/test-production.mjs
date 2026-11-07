@@ -1,9 +1,11 @@
 async function runTests() {
-  console.log('--- STARTING INTEGRATION TESTS ---');
+  const PORT = process.env.PORT || 3000;
+  const BASE_URL = `http://localhost:${PORT}`;
+  console.log(`--- STARTING INTEGRATION TESTS ON ${BASE_URL} ---`);
 
   // 1. Test GET /
   console.log('\n1. Testing GET / (Main Website with Modal)...');
-  const resHome = await fetch('http://localhost:3005/');
+  const resHome = await fetch(`${BASE_URL}/`);
   console.log('Status:', resHome.status);
   const homeHtml = await resHome.text();
   
@@ -36,7 +38,7 @@ async function runTests() {
 
   // 2. Test GET /r/main
   console.log('\n2. Testing GET /r/main (QR code entry)...');
-  const resReferral = await fetch('http://localhost:3005/r/main');
+  const resReferral = await fetch(`${BASE_URL}/r/main`);
   console.log('Status:', resReferral.status);
   if (resReferral.status === 200) {
     console.log('  [PASS] /r/main loads successfully with status 200');
@@ -46,7 +48,7 @@ async function runTests() {
 
   // 3. Test POST /api/track
   console.log('\n3. Testing POST /api/track (Action Tracking)...');
-  const resTrack = await fetch('http://localhost:3005/api/track', {
+  const resTrack = await fetch(`${BASE_URL}/api/track`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -61,17 +63,17 @@ async function runTests() {
 
   // 4. Test GET /admin
   console.log('\n4. Testing GET /admin (Admin Dashboard)...');
-  const resAdmin = await fetch('http://localhost:3005/admin');
+  const resAdmin = await fetch(`${BASE_URL}/admin`);
   console.log('Status:', resAdmin.status);
   const adminHtml = await resAdmin.text();
   console.log('Admin login form exists:', adminHtml.includes('Parol') || adminHtml.includes('SHAROFOV'));
 
   // 5. Test Telegram Webhook GET and POST
   console.log('\n5. Testing Telegram Webhook...');
-  const resWebhookGet = await fetch('http://localhost:3005/api/telegram-webhook');
+  const resWebhookGet = await fetch(`${BASE_URL}/api/telegram-webhook`);
   console.log('GET /api/telegram-webhook status:', resWebhookGet.status);
 
-  const resWebhookPost = await fetch('http://localhost:3005/api/telegram-webhook', {
+  const resWebhookPost = await fetch(`${BASE_URL}/api/telegram-webhook`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

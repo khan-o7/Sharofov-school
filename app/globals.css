@@ -1143,8 +1143,16 @@ section {
 .modal-body {
   padding: 24px;
   overflow-y: auto;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-body > * {
+  width: 100%;
+  flex-shrink: 0;
+  min-height: fit-content;
 }
 
 @keyframes floatSoft {
@@ -1177,12 +1185,15 @@ section {
   border-radius: 20px;
   box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
   transition: all 0.25s ease;
+  min-height: fit-content;
+  box-sizing: border-box;
 }
 
 .glass-panel-gold {
   border: 1px solid rgba(245, 158, 11, 0.35);
   background: linear-gradient(180deg, rgba(35, 25, 16, 0.85) 0%, rgba(13, 20, 38, 0.85) 100%);
   box-shadow: 0 16px 45px -10px rgba(245, 158, 11, 0.18);
+  min-height: fit-content;
 }
 
 .badge-live {
