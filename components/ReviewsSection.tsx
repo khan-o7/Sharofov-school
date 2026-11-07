@@ -43,9 +43,12 @@ export default function ReviewsSection() {
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
   const [rating, setRating] = useState<number>(5);
+  const [hoverRating, setHoverRating] = useState<number>(0);
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const activeRating = hoverRating || rating;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,6 +85,7 @@ export default function ReviewsSection() {
     setRole('');
     setMessage('');
     setRating(5);
+    setHoverRating(0);
     setLoading(false);
 
     setTimeout(() => {
@@ -156,26 +160,67 @@ export default function ReviewsSection() {
                 </select>
               </label>
 
-              <label>
-                Bahoyingiz
-                <div className="review-stars" aria-label="1 dan 5 gacha baho">
-                  {[5, 4, 3, 2, 1].map((star) => (
-                    <span key={star}>
-                      <input
-                        type="radio"
-                        id={`star${star}`}
-                        name="rating"
-                        value={star}
-                        checked={rating === star}
-                        onChange={() => setRating(star)}
-                      />
-                      <label htmlFor={`star${star}`} title={`${star} yulduz`}>
+              <div>
+                <span style={{ display: 'block', marginBottom: 8, color: '#49365a', fontWeight: 650, fontSize: '0.94rem' }}>
+                  Bahoyingiz
+                </span>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    flexWrap: 'wrap',
+                  }}
+                  onMouseLeave={() => setHoverRating(0)}
+                >
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const isFilled = star <= activeRating;
+                    return (
+                      <button
+                        type="button"
+                        key={star}
+                        onClick={() => setRating(star)}
+                        onMouseEnter={() => setHoverRating(star)}
+                        title={`${star} yulduz`}
+                        aria-label={`${star} yulduz`}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: '2px 4px',
+                          cursor: 'pointer',
+                          fontSize: '2rem',
+                          lineHeight: 1,
+                          color: isFilled ? '#e4ae37' : '#d9cde2',
+                          textShadow: isFilled ? '0 0 10px rgba(228, 174, 55, 0.4)' : 'none',
+                          transition: 'all 0.15s ease',
+                          transform: isFilled ? 'scale(1.08)' : 'scale(1)',
+                        }}
+                      >
                         ★
-                      </label>
-                    </span>
-                  ))}
+                      </button>
+                    );
+                  })}
+
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: '#68238e',
+                      background: '#f2e9fb',
+                      padding: '4px 10px',
+                      borderRadius: 20,
+                      marginLeft: 8,
+                    }}
+                  >
+                    {activeRating === 5 && '5 — A’lo'}
+                    {activeRating === 4 && '4 — Yaxshi'}
+                    {activeRating === 3 && '3 — Qoniqarli'}
+                    {activeRating === 2 && '2 — O‘rtacha'}
+                    {activeRating === 1 && '1 — Qoniqarsiz'}
+                  </span>
                 </div>
-              </label>
+              </div>
 
               <label>
                 Fikringiz
@@ -268,4 +313,3 @@ export default function ReviewsSection() {
     </section>
   );
 }
-

@@ -18,7 +18,7 @@ export default function CertificateSection() {
           </div>
 
           <img
-            src="/assets/certificate-sample.jpg"
+            src="/assets/sertifikat.jpeg"
             alt="SHAROFOV SCHOOL kursni tamomlaganlik sertifikati"
             loading="lazy"
           />
@@ -27,4 +27,3 @@ export default function CertificateSection() {
     </section>
   );
 }
-

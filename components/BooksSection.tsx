@@ -10,7 +10,7 @@ export default function BooksSection() {
 
         <div className="book-layout">
           <img
-            src="/assets/books-special.jpg"
+            src="/assets/kitoblar.jpeg"
             alt="SHAROFOV SCHOOL maxsus o‘quv kitoblari"
             loading="lazy"
           />
@@ -34,4 +34,3 @@ export default function BooksSection() {
     </section>
   );
 }
-
