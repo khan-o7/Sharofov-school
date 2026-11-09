@@ -148,13 +148,13 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
               alt="Sharofov School Logo"
               width={34}
               height={34}
-              style={{ filter: 'drop-shadow(0 0 10px rgba(245, 158, 11, 0.45))' }}
+              style={{ filter: 'drop-shadow(0 2px 8px rgba(113, 52, 174, 0.25))' }}
             />
             <div>
-              <div style={{ fontSize: 14, fontWeight: 900, letterSpacing: '0.04em', color: '#fff' }}>
+              <div style={{ fontSize: 14, fontWeight: 900, letterSpacing: '0.04em', color: '#2d0759' }}>
                 SHAROFOV SCHOOL
               </div>
-              <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600 }}>
+              <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 600 }}>
                 Rasmiy Mukofot & Aksiya
               </div>
             </div>
@@ -203,7 +203,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                 transform: 'translateX(-50%)',
                 width: '260px',
                 height: '140px',
-                background: 'radial-gradient(ellipse, rgba(245,158,11,0.25) 0%, transparent 70%)',
+                background: 'radial-gradient(ellipse, rgba(245,158,11,0.2) 0%, transparent 70%)',
                 pointerEvents: 'none',
               }}
             />
@@ -238,7 +238,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                   maxHeight: 140,
                   flexShrink: 0,
                   borderRadius: 24,
-                  boxShadow: '0 14px 40px -5px rgba(245, 158, 11, 0.45), 0 0 0 2px rgba(245, 158, 11, 0.35)',
+                  boxShadow: '0 14px 40px -5px rgba(245, 158, 11, 0.4), 0 0 0 2px rgba(245, 158, 11, 0.35)',
                   display: 'block',
                   objectFit: 'cover',
                   margin: '0 auto',
@@ -260,7 +260,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                 fontWeight: 900,
                 lineHeight: 1.25,
                 marginBottom: 8,
-                color: '#ffffff',
+                color: '#2d0759',
                 fontFamily: 'var(--font-heading)',
               }}
             >
@@ -282,7 +282,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
 
             <p
               style={{
-                color: '#cbd5e1',
+                color: '#4b5563',
                 fontSize: 'clamp(13px, 3.6vw, 15px)',
                 maxWidth: 500,
                 margin: '0 auto',
@@ -298,8 +298,8 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
             className="glass-panel"
             style={{
               padding: '22px 20px',
-              border: subscribed ? '1px solid rgba(16, 185, 129, 0.45)' : '1px solid rgba(255, 255, 255, 0.1)',
-              background: subscribed ? 'rgba(16, 185, 129, 0.06)' : 'rgba(13, 20, 38, 0.75)',
+              border: subscribed ? '1.5px solid rgba(16, 185, 129, 0.5)' : '1px solid rgba(113, 52, 174, 0.14)',
+              background: subscribed ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.85)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 14 }}>
@@ -308,27 +308,27 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                   width: 36,
                   height: 36,
                   borderRadius: 12,
-                  background: subscribed ? 'rgba(16, 185, 129, 0.2)' : 'rgba(0, 136, 204, 0.18)',
-                  color: subscribed ? '#34d399' : '#38bdf8',
+                  background: subscribed ? 'rgba(16, 185, 129, 0.15)' : 'rgba(0, 136, 204, 0.12)',
+                  color: subscribed ? '#059669' : '#0284c7',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 900,
                   fontSize: 17,
                   flexShrink: 0,
-                  border: subscribed ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(0, 136, 204, 0.3)',
+                  border: subscribed ? '1.5px solid rgba(16, 185, 129, 0.35)' : '1.5px solid rgba(0, 136, 204, 0.25)',
                 }}
               >
                 {subscribed ? '✓' : '1'}
               </div>
               <div>
-                <div style={{ fontSize: 11, color: '#fbbf24', fontWeight: 800, letterSpacing: '0.06em' }}>
+                <div style={{ fontSize: 11, color: '#d97706', fontWeight: 800, letterSpacing: '0.06em' }}>
                   1-SHART
                 </div>
-                <h2 style={{ fontSize: 'clamp(17px, 4vw, 20px)', fontWeight: 800, color: '#fff', margin: '2px 0 4px 0' }}>
+                <h2 style={{ fontSize: 'clamp(17px, 4vw, 20px)', fontWeight: 800, color: '#2d0759', margin: '2px 0 4px 0' }}>
                   Telegram kanalga obuna bo‘ling
                 </h2>
-                <p style={{ color: '#94a3b8', fontSize: 13, margin: 0 }}>
+                <p style={{ color: '#6b7280', fontSize: 13, margin: 0 }}>
                   (Kanalimizga obuna bo‘lib, adminga taqdim etasiz)
                 </p>
               </div>
@@ -359,7 +359,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                     borderRadius: 12,
                     background: 'rgba(16, 185, 129, 0.12)',
                     border: '1px solid rgba(16, 185, 129, 0.3)',
-                    color: '#34d399',
+                    color: '#065f46',
                     fontWeight: 650,
                     fontSize: 13,
                     display: 'flex',
@@ -374,7 +374,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
             </div>
           </section>
 
-          {/* SHART 2: O'Z DO'STINGIZNI TAKLIF ETING (CLEAN SHARING - WITHOUT EXTRA FORM AS REQUESTED) */}
+          {/* SHART 2: O'Z DO'STINGIZNI TAKLIF ETING (CLEAN SHARING) */}
           <section className="glass-panel" style={{ padding: '22px 20px' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 14 }}>
               <div
@@ -382,27 +382,27 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                   width: 36,
                   height: 36,
                   borderRadius: 12,
-                  background: 'rgba(245, 158, 11, 0.18)',
-                  color: '#fbbf24',
+                  background: 'rgba(245, 158, 11, 0.14)',
+                  color: '#d97706',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 900,
                   fontSize: 17,
                   flexShrink: 0,
-                  border: '1px solid rgba(245, 158, 11, 0.35)',
+                  border: '1.5px solid rgba(245, 158, 11, 0.35)',
                 }}
               >
                 2
               </div>
               <div>
-                <div style={{ fontSize: 11, color: '#fbbf24', fontWeight: 800, letterSpacing: '0.06em' }}>
+                <div style={{ fontSize: 11, color: '#d97706', fontWeight: 800, letterSpacing: '0.06em' }}>
                   2-SHART
                 </div>
-                <h2 style={{ fontSize: 'clamp(17px, 4vw, 20px)', fontWeight: 800, color: '#fff', margin: '2px 0 4px 0' }}>
+                <h2 style={{ fontSize: 'clamp(17px, 4vw, 20px)', fontWeight: 800, color: '#2d0759', margin: '2px 0 4px 0' }}>
                   O‘z do‘stingizni taklif eting
                 </h2>
-                <p style={{ color: '#94a3b8', fontSize: 13, margin: 0 }}>
+                <p style={{ color: '#6b7280', fontSize: 13, margin: 0 }}>
                   Har bir taklif qilingan do‘stingiz uchun pul mukofotini qo‘lga kiriting
                 </p>
               </div>
@@ -413,10 +413,10 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
               style={{
                 padding: '16px 18px',
                 borderRadius: 14,
-                background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(217, 119, 6, 0.08) 100%)',
-                border: '1px solid rgba(245, 158, 11, 0.45)',
+                background: 'linear-gradient(135deg, rgba(254, 243, 199, 0.85) 0%, rgba(255, 251, 235, 0.95) 100%)',
+                border: '1.5px solid rgba(245, 158, 11, 0.45)',
                 marginBottom: 18,
-                boxShadow: '0 8px 24px -5px rgba(245, 158, 11, 0.15)',
+                boxShadow: '0 8px 24px -5px rgba(245, 158, 11, 0.18)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
@@ -424,17 +424,17 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                 <div
                   style={{
                     fontSize: 'clamp(13px, 3.6vw, 14.5px)',
-                    color: '#fef3c7',
+                    color: '#78350f',
                     lineHeight: 1.7,
                   }}
                 >
-                  <strong style={{ color: '#fbbf24', display: 'block', marginBottom: 4, fontSize: 15 }}>
+                  <strong style={{ color: '#b45309', display: 'block', marginBottom: 4, fontSize: 15 }}>
                     Eslatma:
                   </strong>
                   Do‘stingiz kurs tanlab oylik to‘lovni qilishi bilanoq Sizga har bir do‘stingiz uchun{' '}
                   <strong
                     style={{
-                      color: '#ffffff',
+                      color: '#92400e',
                       whiteSpace: 'nowrap',
                       textDecoration: 'underline',
                       textDecorationColor: '#f59e0b',
@@ -476,7 +476,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
 
           {/* MUKOFOTNI QANDAY OLASIZ STEPPER */}
           <section className="glass-panel" style={{ padding: '22px 20px' }}>
-            <h2 style={{ fontSize: 17, fontWeight: 800, color: '#fff', marginBottom: 14, textAlign: 'center' }}>
+            <h2 style={{ fontSize: 17, fontWeight: 800, color: '#2d0759', marginBottom: 14, textAlign: 'center' }}>
               🏆 Mukofotni Qanday Olasiz?
             </h2>
 
@@ -485,15 +485,15 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                 style={{
                   padding: '16px 14px',
                   borderRadius: 14,
-                  background: 'rgba(6, 11, 23, 0.6)',
-                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  background: 'rgba(248, 244, 252, 0.85)',
+                  border: '1px solid rgba(113, 52, 174, 0.12)',
                   textAlign: 'center',
                 }}
               >
                 <div style={{ fontSize: 28, marginBottom: 6 }}>📱</div>
-                <div style={{ fontWeight: 800, color: '#fbbf24', fontSize: 12, marginBottom: 4 }}>1-QADAM</div>
-                <div style={{ fontWeight: 700, color: '#fff', fontSize: 13.5, marginBottom: 4 }}>Obuna Bo‘ling</div>
-                <div style={{ fontSize: 11.5, color: '#94a3b8' }}>
+                <div style={{ fontWeight: 800, color: '#d97706', fontSize: 12, marginBottom: 4 }}>1-QADAM</div>
+                <div style={{ fontWeight: 700, color: '#2d0759', fontSize: 13.5, marginBottom: 4 }}>Obuna Bo‘ling</div>
+                <div style={{ fontSize: 11.5, color: '#6b7280' }}>
                   Kanalga a’zo bo‘ling va havolani do‘stingizga yuboring
                 </div>
               </div>
@@ -502,15 +502,15 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                 style={{
                   padding: '16px 14px',
                   borderRadius: 14,
-                  background: 'rgba(6, 11, 23, 0.6)',
-                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  background: 'rgba(248, 244, 252, 0.85)',
+                  border: '1px solid rgba(113, 52, 174, 0.12)',
                   textAlign: 'center',
                 }}
               >
                 <div style={{ fontSize: 28, marginBottom: 6 }}>🎓</div>
-                <div style={{ fontWeight: 800, color: '#fbbf24', fontSize: 12, marginBottom: 4 }}>2-QADAM</div>
-                <div style={{ fontWeight: 700, color: '#fff', fontSize: 13.5, marginBottom: 4 }}>Do‘stingiz Boshlaydi</div>
-                <div style={{ fontSize: 11.5, color: '#94a3b8' }}>
+                <div style={{ fontWeight: 800, color: '#d97706', fontSize: 12, marginBottom: 4 }}>2-QADAM</div>
+                <div style={{ fontWeight: 700, color: '#2d0759', fontSize: 13.5, marginBottom: 4 }}>Do‘stingiz Boshlaydi</div>
+                <div style={{ fontSize: 11.5, color: '#6b7280' }}>
                   Do‘stingiz kurs tanlab, oylik to‘lovni amalga oshiradi
                 </div>
               </div>
@@ -519,15 +519,15 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                 style={{
                   padding: '16px 14px',
                   borderRadius: 14,
-                  background: 'rgba(245, 158, 11, 0.09)',
-                  border: '1px solid rgba(245, 158, 11, 0.35)',
+                  background: 'rgba(254, 243, 199, 0.85)',
+                  border: '1.5px solid rgba(245, 158, 11, 0.45)',
                   textAlign: 'center',
                 }}
               >
                 <div style={{ fontSize: 28, marginBottom: 6 }}>💰</div>
-                <div style={{ fontWeight: 800, color: '#fbbf24', fontSize: 12, marginBottom: 4 }}>3-QADAM</div>
-                <div style={{ fontWeight: 700, color: '#fbbf24', fontSize: 13.5, marginBottom: 4 }}>50 000 So‘m</div>
-                <div style={{ fontSize: 11.5, color: '#cbd5e1' }}>
+                <div style={{ fontWeight: 800, color: '#d97706', fontSize: 12, marginBottom: 4 }}>3-QADAM</div>
+                <div style={{ fontWeight: 800, color: '#b45309', fontSize: 13.5, marginBottom: 4 }}>50 000 So‘m</div>
+                <div style={{ fontSize: 11.5, color: '#78350f' }}>
                   Sizga naqd yoki kartangizga pul mukofoti to‘lab beriladi!
                 </div>
               </div>
@@ -538,14 +538,15 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                 marginTop: 16,
                 padding: '12px 14px',
                 borderRadius: 12,
-                background: 'rgba(56, 189, 248, 0.08)',
-                border: '1px solid rgba(56, 189, 248, 0.25)',
+                background: 'rgba(240, 249, 255, 0.9)',
+                border: '1px solid rgba(56, 189, 248, 0.35)',
                 fontSize: 12.5,
-                color: '#bae6fd',
+                color: '#0369a1',
                 textAlign: 'center',
+                fontWeight: 600,
               }}
             >
-              🔥 <strong>Cheklov yo‘q:</strong> 5 ta do‘st = 250 000 so‘m, 10 ta do‘st = 500 000 so‘m pul mukofoti!
+              🔥 <strong style={{ color: '#0284c7' }}>Cheklov yo‘q:</strong> 5 ta do‘st = 250 000 so‘m, 10 ta do‘st = 500 000 so‘m pul mukofoti!
             </div>
           </section>
 
@@ -553,7 +554,7 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
           <section className="glass-panel" style={{ padding: '20px' }}>
             <div style={{ textAlign: 'center', marginBottom: 14 }}>
               <span className="badge-gold">SHAROFOV SCHOOL KURSLARI</span>
-              <p style={{ fontSize: 12.5, color: '#94a3b8', margin: '8px auto 0 auto' }}>
+              <p style={{ fontSize: 13, color: '#4b5563', margin: '8px auto 0 auto', fontWeight: 600 }}>
                 Ingliz tili • Rus tili • Arab tili • Pochemuchka • Matematika
               </p>
             </div>
@@ -569,6 +570,32 @@ export default function SchoolModal({ isOpen, onClose, referralCode = 'main' }: 
                 📞 Administrator bilan bog‘lanish (Telegram)
               </a>
             </div>
+          </section>
+
+          {/* ANIMATED PULSING BATAFSIL BUTTON — CLOSES MODAL & OPENS MAIN SITE */}
+          <section
+            className="glass-panel"
+            style={{
+              padding: '20px',
+              textAlign: 'center',
+              background: 'linear-gradient(135deg, rgba(242, 233, 251, 0.85) 0%, rgba(255, 255, 255, 0.95) 100%)',
+              border: '1.5px solid rgba(113, 52, 174, 0.25)',
+              boxShadow: '0 12px 35px -8px rgba(113, 52, 174, 0.18)',
+            }}
+          >
+            <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 600, marginBottom: 12 }}>
+              Sharofov School o‘quv markazi va kurslar haqida to‘liq tanishish uchun:
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-batafsil-pulse"
+              title="Asosiy saytga o‘tish va to‘liq ma’lumot olish"
+              aria-label="Batafsil asosiy saytga o‘tish"
+            >
+              <span>Batafsil</span>
+              <span className="arrow-anim">➔</span>
+            </button>
           </section>
         </div>
       </div>

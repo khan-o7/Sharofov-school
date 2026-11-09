@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import MainHeader from './MainHeader';
-import OpeningVisual from './OpeningVisual';
 import NextVisual from './NextVisual';
 import AboutSection from './AboutSection';
 import StatsSection from './StatsSection';
@@ -35,7 +34,6 @@ export default function MainWebsite({
 
       {/* Main page content sections */}
       <main id="main-content">
-        <OpeningVisual />
         <NextVisual />
         <AboutSection />
         <StatsSection />

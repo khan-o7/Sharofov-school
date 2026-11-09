@@ -12,7 +12,6 @@ async function runTests() {
   const requiredChecks = [
     { label: 'Wing Brand Logo', check: homeHtml.includes('wing') },
     { label: 'SHAROFOV SCHOOL Title', check: homeHtml.includes('SHAROFOV') },
-    { label: 'Hero Students Image', check: homeHtml.includes('/assets/hero-students.jpg') },
     { label: 'Banner Students Image', check: homeHtml.includes('/assets/banner-students.jpg') },
     { label: 'About Section', check: homeHtml.includes('Bilimga ishonch bilan qadam') },
     { label: 'Stats Section (Animated Stats)', check: homeHtml.includes('Muvaffaqiyatli o‘quvchilar') || homeHtml.includes('stats') },
